@@ -1,5 +1,5 @@
 mod assignments;
 
 fn main() {
-    println!("Please refer to tests for function implementations.")
+    println!("Please refer to unit tests for the solution function calls.")
 }

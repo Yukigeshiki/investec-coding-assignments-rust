@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 
-// Calculates the greatest common divisor of a given i32 array or returns None if the array is empty.
+/// Calculates the GCD of a given i32 array or returns None if the array is empty.
 fn calculate_gcd_array(ints: &[i32]) -> Option<i32> {
     if ints.len() == 0 {
         return None;
@@ -14,7 +14,7 @@ fn calculate_gcd_array(ints: &[i32]) -> Option<i32> {
     Some(res)
 }
 
-// Calculates the greatest common divisor of two i32 integer values.
+/// Calculates the GCD of two i32 integer values.
 fn calculate_gcd(mut a: i32, mut b: i32) -> i32 {
     if a < b {
         (a, b) = (b, a);
