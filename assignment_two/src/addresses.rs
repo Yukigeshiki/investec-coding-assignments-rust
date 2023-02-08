@@ -1,7 +1,7 @@
 use std::fs;
-use crate::assignments::assignment_two::address;
+use crate::address;
 
-const JSON_FILE_PATH: &str = "src/assignments/assignment_two/addresses.json";
+const JSON_FILE_PATH: &str = "src/addresses.json";
 
 #[derive(Debug)]
 pub struct Addresses {
@@ -12,19 +12,21 @@ pub struct Addresses {
 impl Addresses {
     /// A factory method to create an Addresses instance from a json file.
     pub fn from_json_file(path: &str) -> Result<Self, String> {
-        let data =
-            fs::read_to_string(path).map_err(|err| format!("Error importing json file: {:?}", err))?;
+        let data = fs::read_to_string(path)
+            .map_err(|err| format!("error importing json file: {:?}", err))?;
         Ok(
             Self {
                 addresses: serde_json::from_str(&data)
-                    .map_err(|err| format!("Error deserializing json string: {:?}", err))?
+                    .map_err(|err| format!("error deserializing json string: {:?}", err))?
             }
         )
     }
 
     /// The solution to b.
     pub fn pretty_print_addresses(&self) {
-        self.addresses.iter().for_each(|addr| println!("{addr}"));
+        self.addresses
+            .iter()
+            .for_each(|addr| println!("{addr}"));
     }
 
     /// The solution to e.
@@ -47,14 +49,13 @@ impl Addresses {
     pub fn with_addresses<F>(run: F)
         where F: Fn(Addresses) -> ()
     {
-        let addresses = Self::from_json_file(JSON_FILE_PATH).unwrap();
-        run(addresses)
+        run(Self::from_json_file(JSON_FILE_PATH).expect("error fetching addresses"))
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::assignments::assignment_two::addresses::Addresses;
+    use super::Addresses;
 
     #[test]
     fn test_validate_addresses() {

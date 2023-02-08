@@ -1,5 +1,4 @@
 #[allow(dead_code)]
-
 /// Calculates the GCD of a given i32 array or returns None if the array is empty.
 fn calculate_gcd_array(ints: &[i32]) -> Option<i32> {
     if ints.len() == 0 {
@@ -29,9 +28,7 @@ fn calculate_gcd(mut a: i32, mut b: i32) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use crate::assignments::assignment_one::gcd::{
-        calculate_gcd, calculate_gcd_array,
-    };
+    use super::{calculate_gcd, calculate_gcd_array};
 
     #[test]
     fn test_calculate_gcd_array() {

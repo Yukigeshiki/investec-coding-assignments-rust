@@ -156,8 +156,8 @@ impl Address {
 
 #[cfg(test)]
 mod tests {
-    use crate::assignments::assignment_two::address::{NOT_AVAILABLE, Address, ValidationError};
-    use crate::assignments::assignment_two::addresses::Addresses;
+    use super::{NOT_AVAILABLE, Address, ValidationError};
+    use crate::addresses::Addresses;
 
     #[test]
     fn test_is_valid_line_detail() {

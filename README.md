@@ -2,7 +2,7 @@
 
 Investec Bank coding assignments done in Rust.
 
-These assignments are required by Investec to be done in Java, but I thought I'd use them as an opportunity to write my first Rust code outside of a 
+These assignments are required by Investec to be done in Java, but I thought I'd use them as an opportunity to write my first Rust code outside of a
 coding a tutorial.
 
 ### Assignment Questions
@@ -25,3 +25,5 @@ coding a tutorial.
    ii. If the country is ZA, then a province is required as well.
 
    e. For each Address in the attached file, determine if it is valid or not, and if not give an indication of what is invalid in a message format of your choice.
+
+To test the solutions just cd into an assignment lib folder and run `cargo test`.
