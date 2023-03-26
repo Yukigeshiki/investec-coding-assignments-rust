@@ -1,7 +1,7 @@
 #[allow(dead_code)]
 /// Calculates the GCD of a given i32 array or returns None if the array is empty.
 fn calculate_gcd_array(ints: &[i32]) -> Option<i32> {
-    if ints.len() == 0 {
+    if ints.is_empty() {
         return None;
     }
 
@@ -42,4 +42,3 @@ mod tests {
         assert_eq!(calculate_gcd(11, 22), 11);
     }
 }
-

@@ -1,11 +1,12 @@
 use std::fmt::{Debug, Display, Formatter, Result};
 use std::string::ToString;
+
 use regex::Regex;
-use serde::{Deserialize};
+use serde::Deserialize;
 
 const NOT_AVAILABLE: &str = "Not available";
 
-type ValidationError<'a> = &'a str;
+type ValidationError = &'static str;
 
 #[derive(Deserialize, Default, Debug)]
 struct CodeAndName {
@@ -41,14 +42,11 @@ impl Display for LineDetail {
         let ml1 = self.line1.is_empty();
         let ml2 = self.line2.is_empty();
 
-        if ml1 && ml2 {
-            write!(f, "{}", NOT_AVAILABLE)
-        } else if ml1 {
-            write!(f, "{}", self.line2)
-        } else if ml2 {
-            write!(f, "{}", self.line1)
-        } else {
-            write!(f, "{}, {}", self.line1, self.line2)
+        match true {
+            true if ml1 && ml2 => write!(f, "{}", NOT_AVAILABLE),
+            true if ml1 => write!(f, "{}", self.line2),
+            true if ml2 => write!(f, "{}", self.line1),
+            _ => write!(f, "{}, {}", self.line1, self.line2),
         }
     }
 }
@@ -91,12 +89,15 @@ impl Display for Address {
         write!(
             f,
             "{}",
-            format!("{}: ", self.address_type.name) +
-                &format!("{} ", self.line_detail) +
-                &format!("- {} ", Self::str_or(&self.city_or_town, NOT_AVAILABLE)) +
-                &format!("- {} ", Self::str_or(&self.province_or_state.name, NOT_AVAILABLE)) +
-                &format!("- {} ", Self::str_or(&self.postal_code, NOT_AVAILABLE)) +
-                &format!("- {}", Self::str_or(&self.country.name, NOT_AVAILABLE))
+            format!("{}: ", self.address_type.name)
+                + &format!("{} ", self.line_detail)
+                + &format!("- {} ", Self::str_or(&self.city_or_town, NOT_AVAILABLE))
+                + &format!(
+                    "- {} ",
+                    Self::str_or(&self.province_or_state.name, NOT_AVAILABLE)
+                )
+                + &format!("- {} ", Self::str_or(&self.postal_code, NOT_AVAILABLE))
+                + &format!("- {}", Self::str_or(&self.country.name, NOT_AVAILABLE))
         )
     }
 }
@@ -126,17 +127,17 @@ impl Address {
 
     /// The solution to d.
     fn is_valid(&self) -> bool {
-        self.has_valid_province() &&
-            self.country.is_valid_country() &&
-            self.line_detail.is_valid_line_detail() &&
-            Self::is_valid_postal_code(&self.postal_code)
+        self.has_valid_province()
+            && self.country.is_valid_country()
+            && self.line_detail.is_valid_line_detail()
+            && Self::is_valid_postal_code(&self.postal_code)
     }
 
     /// Returns true if the address has a valid province.
     fn has_valid_province(&self) -> bool {
         match self.country.code.as_str() {
             "ZA" => !self.province_or_state.name.to_string().is_empty(),
-            _ => true
+            _ => true,
         }
     }
 
@@ -144,20 +145,24 @@ impl Address {
     fn str_or<'a>(s: &'a str, default: &'a str) -> &'a str {
         match s {
             "" => default,
-            _ => s
+            _ => s,
         }
     }
 
     /// Returns true if the postal code is a numeric value.
     fn is_valid_postal_code(s: &str) -> bool {
-        Regex::new(r"^\d+$").unwrap().is_match(s)
+        match Regex::new(r"^\d+$") {
+            Ok(r) => r.is_match(s),
+            _ => false,
+        }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{NOT_AVAILABLE, Address, ValidationError};
     use crate::addresses::Addresses;
+
+    use super::{Address, ValidationError, NOT_AVAILABLE};
 
     #[test]
     fn test_is_valid_line_detail() {
@@ -171,7 +176,10 @@ mod tests {
     #[test]
     fn test_display_for_line_detail() {
         Addresses::with_addresses(|addrs| {
-            assert_eq!(format!("{}", addrs.addresses[0].line_detail), "Address 1, Line 2");
+            assert_eq!(
+                format!("{}", addrs.addresses[0].line_detail),
+                "Address 1, Line 2"
+            );
             assert_eq!(format!("{}", addrs.addresses[1].line_detail), NOT_AVAILABLE);
             assert_eq!(format!("{}", addrs.addresses[2].line_detail), "Address 3");
         })
@@ -210,10 +218,12 @@ mod tests {
             assert_eq!(addrs.addresses[0].validate(), Vec::<ValidationError>::new());
             assert_eq!(
                 addrs.addresses[1].validate(),
-                vec!["You must include valid address details (line 1 and/or 2 must be filled in)"]);
+                vec!["You must include valid address details (line 1 and/or 2 must be filled in)"]
+            );
             assert_eq!(
                 addrs.addresses[2].validate(),
-                vec!["You must include a province if your country is ZA"]);
+                vec!["You must include a province if your country is ZA"]
+            );
         })
     }
 

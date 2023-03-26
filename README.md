@@ -26,4 +26,4 @@ coding a tutorial.
 
    e. For each Address in the attached file, determine if it is valid or not, and if not give an indication of what is invalid in a message format of your choice.
 
-To test the solutions just cd into an assignment lib folder and run `cargo test`.
+To test the solutions just run `cargo test`.
